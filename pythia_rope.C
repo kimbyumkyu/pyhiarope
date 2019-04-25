@@ -179,7 +179,7 @@ int main(int argc, char **argv) {
 	// Extract settings to be used in the main program.
 
 	pythia.readString("Random:setSeed = on");
-	pythia.readString(Form("Random:seed=%02d",randomseed));
+	pythia.readString(Form("Random:seed=%d",randomseed));
 	// Initialize. Beam parameters set in .cmnd file.
 	pythia.init();
 
@@ -236,7 +236,6 @@ int main(int argc, char **argv) {
 			// Apply simple, particle level, cuts.
 			if (!p.isFinal() || !p.isCharged() || abs(p.eta()) > 2.5 || p.pT() < 0.5) continue;
 			++mult;
-			if (p.pT()>MaxPt) MaxPt = p.pT();
 		}
 		fCent = mult;
 		centbin = binCent.FindBin(fCent) -1;
@@ -248,7 +247,8 @@ int main(int argc, char **argv) {
 		for (int i = 0; i < pythia.event.size(); ++i) {//loop over all the particles in the event
 			Particle& p = pythia.event[i];
 			// Apply simple, particle level, cuts.
-			if (!p.isFinal() || !p.isCharged() || abs(p.eta()) > 2.5 || p.pT() < 0.5) continue;
+			if (!p.isFinal() || !p.isCharged() || abs(p.eta()) > 2.5 ) continue;
+			if (p.pT()>MaxPt) MaxPt = p.pT();
 			tracks->push_back( new TLorentzVector(p.px(),p.py(),p.pz(),p.e()) );
 		}
 
@@ -268,11 +268,11 @@ int main(int argc, char **argv) {
 	
 		for (int i = 0; i < pythia.event.size() -1 ; ++i) {//loop over particles
 			Particle& p = pythia.event[i];
-			if(!p.isFinal() || !p.isCharged() || abs(p.eta()) > 2.5 || p.pT() < 0.5) continue;
+			if(!p.isFinal() || !p.isCharged() || abs(p.eta()) > 2.5 ) continue;
 			TLorentzVector P (p.px(), p.py(), p.pz(), p.e());
 			for (int j = i+1; j < pythia.event.size()  ; ++j) {//loop over particles
 				Particle& q = pythia.event[j];
-				if(!q.isFinal() || !q.isCharged() || abs(q.eta()) > 2.5 || q.pT() < 0.5) continue;
+				if(!q.isFinal() || !q.isCharged() || abs(q.eta()) > 2.5 ) continue;
 				TLorentzVector Q (q.px(), q.py(), q.pz(), q.e());
 				double deltaeta = P.Eta() - Q.Eta();
 				double deltaphi = P.Phi() - Q.Phi();
@@ -288,7 +288,7 @@ int main(int argc, char **argv) {
 		if (ievt>10) {
 			for (int i = 0; i < pythia.event.size()  ; ++i) {//loop over particles
 				Particle& p = pythia.event[i];
-				if(!p.isFinal() || !p.isCharged() || abs(p.eta()) > 2.5 || p.pT() < 0.5) continue;
+				if(!p.isFinal() || !p.isCharged() || abs(p.eta()) > 2.5 ) continue;
 				TLorentzVector P (p.px(), p.py(), p.pz(), p.e());
 				for (auto Q :  alltracks ) {//loop over particles
 					double deltaeta = P.Eta() - Q->Eta();

@@ -254,14 +254,17 @@ int main(int argc, char **argv) {
 
 		
 		if (mult==0) eventpool->pop_back();
-		if ( eventpool->size() > 5 ){
+		if ( eventpool->size() > 11 ){
 			for (auto it: eventpool->front()) delete it;
 			eventpool->pop_front();
 		}
 
 		TRACKS alltracks;
+		int nn =0;
 		for (auto pool: *eventpool){
+			if (nn >10) continue;
 			for (auto trk: pool) alltracks.push_back(trk);
+			nn++;
 		}
 
 	
@@ -285,7 +288,7 @@ int main(int argc, char **argv) {
 
 		}
 		
-		if (ievt>10) {
+		if (eventpool->size() == 11) {
 			for (int i = 0; i < pythia.event.size()  ; ++i) {//loop over particles
 				Particle& p = pythia.event[i];
 				if(!p.isFinal() || !p.isCharged() || abs(p.eta()) > 2.5 ) continue;
